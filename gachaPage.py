@@ -1,4 +1,6 @@
 from cmu_graphics import *
+from PIL import Image
+import os, os.path
 import random
 
 from playerAndFae import Player, Fae
@@ -14,6 +16,8 @@ class GachaSet:
                 self.faeList[fae.rarity].add(fae)
         
         self.pullCost = pullCost
+
+        self.getSprites(faeList)
 
     def summonFromSet(self, player):
         # summon a Fae from the set
@@ -73,3 +77,10 @@ class GachaSet:
                 rarityProbabilities[rarity] *= 1.1
 
         return rarityProbabilities
+    
+    def getSprites(self, faeList):      
+        for fae in faeList:
+            imageFileDirectory = f'sprites\{fae.name}.jpg'
+            imPIL = Image.open(imageFileDirectory)
+
+            fae.sprite = CMUImage(imPIL)

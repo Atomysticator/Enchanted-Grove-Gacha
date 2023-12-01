@@ -9,6 +9,7 @@ class Player:
         self.summonHistory = []
         self.wallet = 10000
         self.lives = 3
+        self.recentFae = None
 
     def updateAfterSummon(self, summonedFae):
         if summonedFae:
@@ -22,6 +23,8 @@ class Player:
                 self.lastRarePull = 1
             else:
                 self.lastRarePull += 1
+            
+            self.recentFae = summonedFae
     
     def spendCurrency(self, amount):
         if self.wallet >= amount:
@@ -79,13 +82,15 @@ class Player:
         
 
 class Fae:
-    def __init__(self, name, rarity, category, sprite, subType):
+    def __init__(self, name, rarity, category, subType):
         self.name = name
         self.rarity = rarity
         self.category = category
-        self.sprite = sprite
         self.subType = subType
 
     def __repr__(self):
         return(f'{self.name}: {self.rarity}')
+    
+    def draw(self,x, y):
+        drawImage(self.sprite, x, y)
 

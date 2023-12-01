@@ -1,4 +1,5 @@
 from cmu_graphics import *
+from PIL import Image
 import random
 
 from gachaPage import GachaSet
@@ -27,9 +28,9 @@ def onAppStart(app):
     startHomeScreen(app)
     # Button Initialization
     app.gachaButton = Button('Summon!', app.width/2, 
-                             app.height/2 + 50, 150, 30, 
+                             app.height/2 + 80, 150, 30, 
                              lambda: startGacha(app))
-    app.dungeonButton = Button('Explore!', app.width/2, app.height/2, 
+    app.dungeonButton = Button('Explore!', app.width/2, app.height/2 + 30, 
                                150, 30, lambda: startDungeon(app))
     app.summonButton = Button('Summon', app.width/2, app.height/2 + 50, 100, 40, lambda: summonFae(app))
 
@@ -61,7 +62,7 @@ def redrawAll(app):
     if app.screen == 'home':
         drawHome(app)
     if app.eventMessage:
-        drawLabel(app.eventMessage, app.width/2, app.height/2, size = 20, fill = 'Green', bold = True)
+        drawLabel(app.eventMessage, app.width/2, 100, size = 20, fill = 'Green', bold = True)
 
 def drawMaze(app):
     app.player.draw(app, app.maze.cellSize)
@@ -70,7 +71,10 @@ def drawMaze(app):
 def drawHome(app):
     app.gachaButton.draw()
     app.dungeonButton.draw()
-    drawLabel('ENCHANTED GROVE B*TCH', app.width/2, 100, size=28, fill='black', bold = True)
+    drawLabel('ENCHANTED GROVE', app.width/2, 70, size=28, fill='black', bold = True)
+    drawLabel('ESC to return home', 70, 30, size = 15)
+    if app.player.recentFae:
+        app.player.recentFae.draw(app.width/2-100, app.height/2 - 200)
 
 def drawEvent(app):
     app.currentRoom.event.drawChoices(app)
@@ -79,6 +83,7 @@ def drawGachaMachine(app):
     app.summonButton.draw()
     if app.summonedFae:
         drawLabel(f'Summoned: {app.summonedFae.name}, {app.summonedFae.rarity}', app.width/2, app.height/2, size=15, fill='black')
+        app.summonedFae.draw(app.width/2-100, app.height/2 - 220)
     if app.broke:
         drawLabel('Not enough Essence', 150, 200, size=15, fill='red')
     drawLabel(f'Essence: {app.player.wallet}', 300, 50, size=15, fill='black')

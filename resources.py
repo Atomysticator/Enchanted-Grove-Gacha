@@ -1,8 +1,8 @@
 from cmu_graphics import *
-import random
 
 from explorePage import Event
 from playerAndFae import Fae
+
 
 events = [
     Event('Fairy Tea Party', 'Fairies invite you to their magical tea party.', {'up': 'Share Stories', 'down': 'Sing Songs', 'left': 'Dance', 'right': 'Taste Tea'}, {'right', 'up'}, 10),
@@ -15,25 +15,43 @@ events = [
     Event("Herbalist's Hut", 'A hut filled with herbs and potions, tended by a wise herbalist.', {'up': 'Learn', 'down': 'Assist', 'left': 'Brew', 'right': 'Gather'}, {'left', 'up'}, 15)
 ]
 
+'''
+Name:
+Whatever as long as its on theme :)
+
+Rarities:
+"Mythic", "Ancient", "Legendary", "Epic", "Rare", "Uncommon", "Common"
+
+Fae possible Categories: Fungoid (fungus/shrooms), Anurian (frogs/toads etc.),
+Goblinoid (goblins and other nefarious Fae creatures), Faerie (Traditional Faerie)
+
+Possible Subtypes: 
+Moon (Characteristics like: Mischevious, mysterious, etherial),
+Celestial (Characteristics like: Bright, cheery, light), 
+Nature (Characteristics like: Dreary, natural, dark),
+Klepto (Characteristics like: Crazy, chaotic, lots of accessories and items),
+Decay (Characteristics like: Death, decay etc.)
+'''
+
 faeExamples = [
-    Fae("Mushrella", "Mythic", "Fungoid", "sprite1", " "),
-    Fae("Toadstool", "Mythic", "Fungoid", "sprite2", " "),
-    Fae("Frogsworth", "Ancient", "Anurian", "sprite3", " "),
-    Fae("Lilypad", "Ancient", "Anurian", "sprite4", " "),
-    Fae("Pixelle", "Legendary", "Faerie", "sprite5", " "),
-    Fae("Wingdust", "Legendary", "Faerie", "sprite6", " "),
-    Fae("Goblo", "Epic", "Goblinoid", "sprite7", " "),
-    Fae("Grimmle", "Epic", "Goblinoid", "sprite8", " "),
-    Fae("Shroomkin", "Rare", "Fungoid", "sprite9", " "),
-    Fae("Fungar", "Rare", "Fungoid", "sprite10", " "),
-    Fae("Hopper", "Uncommon", "Anurian", "sprite11", " "),
-    Fae("Ribbita", "Uncommon", "Anurian", "sprite12", " "),
-    Fae("FaeLight", "Common", "Faerie", "sprite13", " "),
-    Fae("Starling", "Common", "Faerie", "sprite14", " "),
-    Fae("Boggle", "Mythic", "Goblinoid", "sprite15", " "),
-    Fae("Nix", "Mythic", "Goblinoid", "sprite16", " "),
-    Fae("Sporeling", "Ancient", "Fungoid", "sprite17", " "),
-    Fae("Croaker", "Ancient", "Anurian", "sprite18", " "),
-    Fae("Spritekin", "Legendary", "Faerie", "sprite19", " "),
-    Fae("Gremlin", "Legendary", "Goblinoid", "sprite20", " ")
+    # Fae("Mushrella", "Mythic", "Fungoid", " "),
+    # Fae("Toadstool", "Mythic", "Fungoid", " "),
+    # Fae("Frogsworth", "Ancient", "Anurian", " "),
+    # Fae("Lilypad", "Ancient", "Anurian", " "),
+    Fae("Pixelle", "Legendary", "Faerie", "Moon"),
+    # Fae("Wingdust", "Legendary", "Faerie", " "),
+    # Fae("Goblo", "Epic", "Goblinoid", " "),
+    # Fae("Grimmle", "Epic", "Goblinoid", " "),
+    # Fae("Shroomkin", "Rare", "Fungoid", " "),
+    # Fae("Fungar", "Rare", "Fungoid", " "),
+    # Fae("Hopper", "Uncommon", "Anurian", " "),
+    # Fae("Ribbita", "Uncommon", "Anurian", " "),
+    # Fae("FaeLight", "Common", "Faerie", " "),
+    # Fae("Starling", "Common", "Faerie", " "),
+    # Fae("Boggle", "Mythic", "Goblinoid", " "),
+    # Fae("Nix", "Mythic", "Goblinoid", " "),
+    # Fae("Sporeling", "Ancient", "Fungoid", " "),
+    # Fae("Croaker", "Ancient", "Anurian", " "),
+    # Fae("Spritekin", "Legendary", "Faerie", " "),
+    # Fae("Gremlin", "Legendary", "Goblinoid", " ")
 ]
