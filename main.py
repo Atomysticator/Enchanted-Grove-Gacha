@@ -2,32 +2,12 @@ from cmu_graphics import *
 import random
 
 from gachaPage import GachaSet
-from explorePage import Dungeon, Maze, Cell, Room
-from playerAndFae import Player, Fae
+from explorePage import Maze
+from playerAndFae import Player
 from utils import Button
+from resources import faeExamples, events
 
-faeExamples = [
-    Fae("Mushrella", "Mythic", "Fungoid", "sprite1", " "),
-    Fae("Toadstool", "Mythic", "Fungoid", "sprite2", " "),
-    Fae("Frogsworth", "Ancient", "Anurian", "sprite3", " "),
-    Fae("Lilypad", "Ancient", "Anurian", "sprite4", " "),
-    Fae("Pixelle", "Legendary", "Faerie", "sprite5", " "),
-    Fae("Wingdust", "Legendary", "Faerie", "sprite6", " "),
-    Fae("Goblo", "Epic", "Goblinoid", "sprite7", " "),
-    Fae("Grimmle", "Epic", "Goblinoid", "sprite8", " "),
-    Fae("Shroomkin", "Rare", "Fungoid", "sprite9", " "),
-    Fae("Fungar", "Rare", "Fungoid", "sprite10", " "),
-    Fae("Hopper", "Uncommon", "Anurian", "sprite11", " "),
-    Fae("Ribbita", "Uncommon", "Anurian", "sprite12", " "),
-    Fae("FaeLight", "Common", "Faerie", "sprite13", " "),
-    Fae("Starling", "Common", "Faerie", "sprite14", " "),
-    Fae("Boggle", "Mythic", "Goblinoid", "sprite15", " "),
-    Fae("Nix", "Mythic", "Goblinoid", "sprite16", " "),
-    Fae("Sporeling", "Ancient", "Fungoid", "sprite17", " "),
-    Fae("Croaker", "Ancient", "Anurian", "sprite18", " "),
-    Fae("Spritekin", "Legendary", "Faerie", "sprite19", " "),
-    Fae("Gremlin", "Legendary", "Goblinoid", "sprite20", " ")
-]
+set1 = GachaSet(faeExamples, 10)
 
 def summonFae(app):
     # Perform a summon
@@ -39,59 +19,95 @@ def summonFae(app):
         app.broke = True
 
 def onAppStart(app):
-    app.background = 'lightGray'
+    app.width = 600
+    app.height = 600
     app.player = Player()
-    app.dungeon = Dungeon(app.player)
-    app.gachaSet = GachaSet(faeExamples, 10)
+    app.events = events
+    app.eventMessage = None
+    startHomeScreen(app)
+    # Button Initialization
+    app.gachaButton = Button('Summon!', app.width/2, 
+                             app.height/2 + 50, 150, 30, 
+                             lambda: startGacha(app))
+    app.dungeonButton = Button('Explore!', app.width/2, app.height/2, 
+                               150, 30, lambda: startDungeon(app))
+    app.summonButton = Button('Summon', app.width/2, app.height/2 + 50, 100, 40, lambda: summonFae(app))
+
+def startHomeScreen(app):
+    app.screen = 'home'
+
+def startGacha(app):
+    app.gachaSet = set1
     app.summonedFae = None
     app.broke = False
-    app.currentScreen = 'gacha'
+    app.screen = 'gacha'
 
-    app.nextRoomButton = Button('Next Room', 100, 100, 100, 40, 
-                                lambda: app.dungeon.completeRoom(app.player))
-    app.gachaButton = Button('Go to Gacha Machine', app.width - 170, 
-                             app.height - 50, 150, 30, 
-                             lambda: changeScreen(app, 'gacha'))
-    app.dungeonButton = Button('Go to Dungeon', 50, app.height - 50, 
-                               120, 30, lambda: dungeonButtonHandler(app))
-    app.summonButton = Button('Summon', 150, 100, 100, 40, lambda: summonFae(app))
-
+def startDungeon(app):
+    app.maze = Maze(app, random.randrange(5,11) +  app.player.collectionSize//10, 
+                    random.randrange(5,11) +  app.player.collectionSize//10)
+    app.maze.generateMaze(app)
+    app.player.calculateVisibility(app.maze)
+    app.player.lives = 3 + app.player.collectionSize//10
+    app.screen = 'dungeon'
+    app.roomsComplete = 0
 
 def redrawAll(app):
-    if app.currentScreen == 'gacha':
+    if app.screen == 'gacha':
         drawGachaMachine(app)
-    elif app.currentScreen == 'dungeon':
-        app.nextRoomButton.draw()
-        app.dungeon.drawDungeon(app)
-    drawNavigationButtons(app)
+    if app.screen == 'roomEvent':
+        drawEvent(app)
+    if app.screen == 'dungeon':
+        drawMaze(app)
+    if app.screen == 'home':
+        drawHome(app)
+    if app.eventMessage:
+        drawLabel(app.eventMessage, app.width/2, app.height/2, size = 20, fill = 'Green', bold = True)
 
-def drawNavigationButtons(app):
+def drawMaze(app):
+    app.player.draw(app, app.maze.cellSize)
+    app.maze.draw(app)
+
+def drawHome(app):
     app.gachaButton.draw()
     app.dungeonButton.draw()
+    drawLabel('ENCHANTED GROVE B*TCH', app.width/2, 100, size=28, fill='black', bold = True)
 
-def changeScreen(app, screen):
-    app.currentScreen = screen
+def drawEvent(app):
+    app.currentRoom.event.drawChoices(app)
 
 def drawGachaMachine(app):
     app.summonButton.draw()
     if app.summonedFae:
-        drawLabel(f'''Summoned: {app.summonedFae.name}, {app.summonedFae.rarity}, 
-                {app.summonedFae.category}''', 150, 200, size=15, fill='black')
+        drawLabel(f'Summoned: {app.summonedFae.name}, {app.summonedFae.rarity}', app.width/2, app.height/2, size=15, fill='black')
     if app.broke:
-        drawLabel('Not enough currency', 150, 200, size=15, fill='red')
-    drawLabel(f'Currency: {app.player.wallet}', 300, 50, size=15, fill='black')
+        drawLabel('Not enough Essence', 150, 200, size=15, fill='red')
+    drawLabel(f'Essence: {app.player.wallet}', 300, 50, size=15, fill='black')
 
 def onMousePress(app, mx, my):
-    if app.currentScreen == 'dungeon':
-        app.nextRoomButton.onClick(mx, my)
-    if app.currentScreen == 'gacha':
+    if app.screen == 'gacha':
         app.summonButton.onClick(mx, my)
-    app.dungeonButton.onClick(mx, my)
-    app.gachaButton.onClick(mx, my)
+    if app.screen == 'home':
+        app.dungeonButton.onClick(mx, my)
+        app.gachaButton.onClick(mx, my)
 
-def dungeonButtonHandler(app):
-    changeScreen(app, 'dungeon')
-    app.dungeon = Dungeon(app.player)
+def onKeyPress(app, key):
+    app.eventMessage = None
+    if key == 'escape':
+        startHomeScreen(app)
+    # Handle player movement
+    elif app.screen == 'dungeon':
+        if key in ['up', 'down', 'left', 'right']:
+            app.player.move(key, app)
+            # Update the player's current cell
+            app.player.playerCell = app.maze.grid[app.player.x][app.player.y]
+    elif app.screen == 'roomEvent':
+        if key in ['up', 'down', 'left', 'right']:
+            if app.currentRoom.eventChoiceHandler(app, key):
+                app.eventMessage = 'Out of Lives! Try again :)'
+                startDungeon(app)
+
+def changeScreen(app, screen):
+    app.screen = screen
 
 def main():
     runApp()
